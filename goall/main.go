@@ -10,17 +10,17 @@ import (
 
 func main() {
 	// ensure example/site directory exists
-	err := os.Mkdir("./example/site/posts", 0755)
+	err := os.MkdirAll("./site/posts", 0755)
 	if err != nil {
 		log.Printf("Warn: %v\n", err)
 	}
 
 	// get all posts
-	posts := goall.MakePostsList("./example/posts")
+	posts := goall.MakePostsList("./posts")
 
 	// parse posts into site/posts
 	for _, p := range posts {
 		prefix := p[:len(p)-len(path.Ext(p))]
-		goall.ParseMarkdown("example/posts/"+p, "example/site/posts/"+prefix+".html")
+		goall.ParseMarkdown("posts/"+p, "site/posts/"+prefix+".html")
 	}
 }
