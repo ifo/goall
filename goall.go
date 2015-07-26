@@ -24,23 +24,26 @@ func MakePostsList(postsDir string) []string {
 	return out
 }
 
+// parse a markdown file and save it as a post, unless it exists
 func ParseMarkdown(input, output string) {
-	p := markdown.NewParser(&markdown.Extensions{Smart: true})
+	if _, err := os.Stat(output); os.IsNotExist(err) {
+		p := markdown.NewParser(&markdown.Extensions{Smart: true})
 
-	inFile, err := os.Open(input)
-	if err != nil {
-		panic(err)
+		inFile, err := os.Open(input)
+		if err != nil {
+			panic(err)
+		}
+		defer inFile.Close()
+
+		outFile, err := os.Create(output)
+		if err != nil {
+			panic(err)
+		}
+		defer outFile.Close()
+
+		w := bufio.NewWriter(outFile)
+
+		p.Markdown(inFile, markdown.ToHTML(w))
+		w.Flush()
 	}
-	defer inFile.Close()
-
-	outFile, err := os.Create(output)
-	if err != nil {
-		panic(err)
-	}
-	defer outFile.Close()
-
-	w := bufio.NewWriter(outFile)
-
-	p.Markdown(inFile, markdown.ToHTML(w))
-	w.Flush()
 }
