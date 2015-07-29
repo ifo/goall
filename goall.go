@@ -5,8 +5,9 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
-	"github.com/knieriem/markdown"
+	"github.com/russross/blackfriday"
 )
 
 func MakePostsList(postsDir string) []string {
@@ -18,32 +19,41 @@ func MakePostsList(postsDir string) []string {
 
 	out := []string{}
 	for _, d := range dirs {
-		out = append(out, d.Name())
+		if strings.HasSuffix(d.Name(), ".md") ||
+			strings.HasSuffix(d.Name(), ".markdown") {
+			out = append(out, d.Name())
+		}
 	}
 
 	return out
 }
 
-// parse a markdown file and save it as a post, unless it exists
-func ParseMarkdown(input, output string) {
-	if _, err := os.Stat(output); os.IsNotExist(err) {
-		p := markdown.NewParser(&markdown.Extensions{Smart: true})
-
-		inFile, err := os.Open(input)
-		if err != nil {
-			panic(err)
-		}
-		defer inFile.Close()
-
-		outFile, err := os.Create(output)
-		if err != nil {
-			panic(err)
-		}
-		defer outFile.Close()
-
-		w := bufio.NewWriter(outFile)
-
-		p.Markdown(inFile, markdown.ToHTML(w))
-		w.Flush()
+func ParseMarkdown(inputFile string) ([]byte, error) {
+	in, err := ioutil.ReadFile(inputFile)
+	if err != nil {
+		return nil, err
 	}
+
+	return blackfriday.MarkdownCommon(in), nil
+}
+
+func WriteFile(dest string, info []byte) error {
+	_, err := os.Stat(dest)
+	if os.IsNotExist(err) {
+		return OverwriteFile(dest, info)
+	}
+	return err
+}
+
+func OverwriteFile(dest string, info []byte) error {
+	outFile, errCreate := os.Create(dest)
+	if errCreate != nil {
+		return errCreate
+	}
+	defer outFile.Close()
+
+	w := bufio.NewWriter(outFile)
+	_, errWrite := w.Write(info)
+	w.Flush()
+	return errWrite
 }

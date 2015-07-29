@@ -21,6 +21,11 @@ func main() {
 	// parse posts into site/posts
 	for _, p := range posts {
 		prefix := p[:len(p)-len(path.Ext(p))]
-		goall.ParseMarkdown("posts/"+p, "site/posts/"+prefix+".html")
+		b, err := goall.ParseMarkdown("posts/" + p)
+		if err != nil {
+			log.Println(err)
+		} else {
+			goall.WriteFile("site/posts/"+prefix+".html", b)
+		}
 	}
 }
