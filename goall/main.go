@@ -24,8 +24,13 @@ func main() {
 		b, err := goall.ParseMarkdown("posts/" + p)
 		if err != nil {
 			log.Println(err)
-		} else {
-			goall.WriteFile("site/posts/"+prefix+".html", b)
+			continue
 		}
+		post, err := goall.AssemblePost(b)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		goall.WriteFile("site/posts/"+prefix+".html", post)
 	}
 }
