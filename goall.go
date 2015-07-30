@@ -11,7 +11,6 @@ import (
 )
 
 func MakePostsList(postsDir string) []string {
-	// get dir list
 	dirs, err := ioutil.ReadDir(postsDir)
 	if err != nil {
 		log.Fatalln(err)
