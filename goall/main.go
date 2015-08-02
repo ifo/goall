@@ -15,22 +15,30 @@ func main() {
 		log.Printf("Warn: %v\n", err)
 	}
 
-	// create index
-	index, err := goall.AssembleIndex(goall.CreateIndex(".", "./posts"))
-	if err != nil {
-		log.Fatalln("Could not assemble index page", err)
+	errIndex := CreateIndexPage(".", "./posts")
+	if errIndex != nil {
+		log.Fatalln("Could not assemble index page", errIndex)
 	}
 
-	// index might be updated
+	CreatePosts("./posts", "./site/posts")
+}
+
+func CreateIndexPage(rootDir, postsDir string) error {
+	index, err := goall.AssembleIndex(goall.CreateIndex(rootDir, postsDir))
+	if err != nil {
+		return err
+	}
+
 	goall.OverwriteFile("site/index.html", index)
+	return nil
+}
 
-	// get all posts
-	posts := goall.MakePostsList("./posts")
+func CreatePosts(postsDir, siteDir string) {
+	posts := goall.MakePostsList(postsDir)
 
-	// parse posts into site/posts
 	for _, p := range posts {
 		prefix := p[:len(p)-len(path.Ext(p))]
-		b, err := goall.ParseMarkdown("posts/" + p)
+		b, err := goall.ParseMarkdown(postsDir + p)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -40,6 +48,6 @@ func main() {
 			log.Println(err)
 			continue
 		}
-		goall.WriteFile("site/posts/"+prefix+".html", post)
+		goall.WriteFile(siteDir+prefix+".html", post)
 	}
 }
