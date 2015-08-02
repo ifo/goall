@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Index Page</title>
+  </head>
+  <body>
+    <header>
+      <h1>Site Title</h1>
+      <ul>
+        {{ range $_, $link := .Links }}
+        <li><a href="{{ $link }}">{{ $link }}</a></li>
+        {{ end }}
+      </ul>
+    </header>
+    <div class="container">
+      <ul>
+        {{ range $_, $post := .Posts }}
+        <li><a href="posts/{{ $post }}">{{ $post }}</a></li>
+        {{ end }}
+      </ul>
+    </div>
+    <footer>
+      <h6>Site Footer</h6>
+    </footer>
+  </body>
+</html>

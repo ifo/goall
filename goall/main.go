@@ -15,6 +15,15 @@ func main() {
 		log.Printf("Warn: %v\n", err)
 	}
 
+	// create index
+	index, err := goall.AssembleIndex(goall.CreateIndex(".", "./posts"))
+	if err != nil {
+		log.Fatalln("Could not assemble index page", err)
+	}
+
+	// index might be updated
+	goall.OverwriteFile("site/index.html", index)
+
 	// get all posts
 	posts := goall.MakePostsList("./posts")
 
