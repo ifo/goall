@@ -10,17 +10,17 @@ import (
 
 func main() {
 	// ensure example/site directory exists
-	err := os.MkdirAll("./site/posts", 0755)
+	err := os.MkdirAll("./_site/posts", 0755)
 	if err != nil {
 		log.Printf("Warn: %v\n", err)
 	}
 
-	errIndex := CreateIndexPage(".", "./posts")
+	errIndex := CreateIndexPage(".", "./_posts")
 	if errIndex != nil {
 		log.Fatalln("Could not assemble index page", errIndex)
 	}
 
-	CreatePosts("./posts", "./site/posts")
+	CreatePosts("./_posts", "./_site/posts")
 }
 
 func CreateIndexPage(rootDir, postsDir string) error {
@@ -29,7 +29,7 @@ func CreateIndexPage(rootDir, postsDir string) error {
 		return err
 	}
 
-	goall.OverwriteFile("site/index.html", index)
+	goall.OverwriteFile("_site/index.html", index)
 	return nil
 }
 
@@ -38,7 +38,7 @@ func CreatePosts(postsDir, siteDir string) {
 
 	for _, p := range posts {
 		prefix := p[:len(p)-len(path.Ext(p))]
-		b, err := goall.ParseMarkdown(postsDir + p)
+		b, err := goall.ParseMarkdown(postsDir + "/" + p)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -48,6 +48,6 @@ func CreatePosts(postsDir, siteDir string) {
 			log.Println(err)
 			continue
 		}
-		goall.WriteFile(siteDir+prefix+".html", post)
+		goall.WriteFile(siteDir+"/"+prefix+".html", post)
 	}
 }

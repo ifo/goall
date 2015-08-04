@@ -41,7 +41,7 @@ func AssembleIndex(index Index) ([]byte, error) {
 }
 
 func AssemblePost(post []byte) ([]byte, error) {
-	page, err := template.ParseFiles("post.html")
+	page, err := template.ParseFiles("_templates/post.html")
 	if err != nil {
 		log.Fatalln("template.ParseFiles", err)
 	}
