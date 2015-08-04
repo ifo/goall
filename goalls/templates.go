@@ -3,9 +3,15 @@ package goalls
 import (
 	"bufio"
 	"bytes"
+	"flag"
 	"html/template"
 	"log"
 )
+
+var templatesDir = flag.String(
+	"templates-dir",
+	"./_templates",
+	"directory containing templates")
 
 type Index struct {
 	Links []string
@@ -41,7 +47,7 @@ func AssembleIndex(index Index) ([]byte, error) {
 }
 
 func AssemblePost(post []byte) ([]byte, error) {
-	page, err := template.ParseFiles("_templates/post.html")
+	page, err := template.ParseFiles(*templatesDir + "/post.html")
 	if err != nil {
 		log.Panicln("template.ParseFiles", err)
 	}
