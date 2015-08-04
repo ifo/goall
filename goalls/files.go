@@ -14,7 +14,7 @@ func GetLinksPages(dir string) []string {
 
 	dirs, err := ioutil.ReadDir(dir)
 	if err != nil {
-		log.Fatalln("ioutil.ReadDir error", err)
+		log.Panicln("ioutil.ReadDir error", err)
 	}
 
 	out := []string{}
@@ -31,7 +31,7 @@ func GetLinksPages(dir string) []string {
 func MakePostsList(postsDir string) []string {
 	dirs, err := ioutil.ReadDir(postsDir)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panicln(err)
 	}
 
 	out := []string{}
