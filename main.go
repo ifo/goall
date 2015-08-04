@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/ifo/goall"
+	"github.com/ifo/goall/goalls"
 )
 
 func main() {
@@ -24,30 +24,30 @@ func main() {
 }
 
 func CreateIndexPage(rootDir, postsDir string) error {
-	index, err := goall.AssembleIndex(goall.CreateIndex(rootDir, postsDir))
+	index, err := goalls.AssembleIndex(goalls.CreateIndex(rootDir, postsDir))
 	if err != nil {
 		return err
 	}
 
-	goall.OverwriteFile("_site/index.html", index)
+	goalls.OverwriteFile("_site/index.html", index)
 	return nil
 }
 
 func CreatePosts(postsDir, siteDir string) {
-	posts := goall.MakePostsList(postsDir)
+	posts := goalls.MakePostsList(postsDir)
 
 	for _, p := range posts {
 		prefix := p[:len(p)-len(path.Ext(p))]
-		b, err := goall.ParseMarkdown(postsDir + "/" + p)
+		b, err := goalls.ParseMarkdown(postsDir + "/" + p)
 		if err != nil {
 			log.Println(err)
 			continue
 		}
-		post, err := goall.AssemblePost(b)
+		post, err := goalls.AssemblePost(b)
 		if err != nil {
 			log.Println(err)
 			continue
 		}
-		goall.WriteFile(siteDir+"/"+prefix+".html", post)
+		goalls.WriteFile(siteDir+"/"+prefix+".html", post)
 	}
 }

@@ -1,4 +1,4 @@
-package goall
+package goalls
 
 import (
 	"bufio"
