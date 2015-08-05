@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 	"path"
@@ -9,6 +10,15 @@ import (
 )
 
 func main() {
+	templatesDir := flag.String(
+		"templates-dir",
+		"./_templates",
+		"directory containing templates")
+
+	// setup
+	flag.Parse()
+	goalls.SetupTemplates(*templatesDir)
+
 	// ensure example/site directory exists
 	err := os.MkdirAll("./_site/posts", 0755)
 	if err != nil {
@@ -17,7 +27,7 @@ func main() {
 
 	errIndex := CreateIndexPage(".", "./_posts")
 	if errIndex != nil {
-		log.Fatalln("Could not assemble index page", errIndex)
+		log.Panicln("Could not assemble index page", errIndex)
 	}
 
 	CreatePosts("./_posts", "./_site/posts")
