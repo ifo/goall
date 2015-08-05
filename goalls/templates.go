@@ -22,7 +22,10 @@ func SetupTemplates(dir string) {
 
 // TODO handle errors
 func CreateIndex(rootDir, postsDir string) Index {
-	links := GetLinksPages(rootDir)
+	links, err := GetLinksPages(rootDir)
+	if err != nil {
+		log.Panicln("GetLinksPages error", err)
+	}
 	posts := MakePostsNames(MakePostsList(postsDir))
 	return Index{Links: links, Posts: posts}
 }

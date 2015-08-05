@@ -8,24 +8,22 @@ import (
 	"strings"
 )
 
-func GetLinksPages(dir string) []string {
-	// TODO set links in configuration somewhere?
-	pages := []string{"index", "about", "contact"}
+func GetLinksPages(dir string) ([]string, error) {
+	out := []string{}
 
 	dirs, err := ioutil.ReadDir(dir)
 	if err != nil {
-		log.Panicln("ioutil.ReadDir error", err)
+		return out, err
 	}
 
-	out := []string{}
 	for _, d := range dirs {
-		if ContainsStem(pages, d.Name()) {
+		// ignore all files begining with '_'
+		if d.Name()[0] != '_' {
 			out = append(out, d.Name())
 		}
 	}
 
-	// TODO actually return errors
-	return out
+	return out, nil
 }
 
 func MakePostsList(postsDir string) []string {
