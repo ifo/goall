@@ -34,7 +34,9 @@ func main() {
 }
 
 func CreateIndexPage(rootDir, postsDir string) error {
-	index, err := goalls.AssembleIndex(goalls.CreateIndex(rootDir, postsDir))
+	index, err := goalls.AssemblePage(
+		"index.html",
+		goalls.CreateIndex(rootDir, postsDir))
 	if err != nil {
 		return err
 	}
@@ -53,7 +55,7 @@ func CreatePosts(postsDir, siteDir string) {
 			log.Println(err)
 			continue
 		}
-		post, err := goalls.AssemblePost(b)
+		post, err := goalls.AssembleTemplate("post.html", goalls.TemplateHTML(b))
 		if err != nil {
 			log.Println(err)
 			continue

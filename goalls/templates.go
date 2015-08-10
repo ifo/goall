@@ -30,45 +30,34 @@ func CreateIndex(rootDir, postsDir string) Index {
 	return Index{Links: links, Posts: posts}
 }
 
-func AssembleIndex(index Index) ([]byte, error) {
-	page, err := template.ParseFiles("index.html")
-	if err != nil {
-		log.Panicln("template.ParseFiles error", err)
+func AssemblePage(loc string, info interface{}) ([]byte, error) {
+	page, errTemplate := template.ParseFiles(loc)
+	if errTemplate != nil {
+		log.Println("template.ParseFiles error")
+		return nil, errTemplate
 	}
 
 	out := new(bytes.Buffer)
 	w := bufio.NewWriter(out)
-	err = page.Execute(w, index)
-	if err != nil {
-		log.Panicln("template.Execute error", err)
+	errExecute := page.Execute(w, info)
+
+	if errExecute != nil {
+		log.Println("template.Execute error")
+		return nil, errExecute
 	}
-	err = w.Flush()
-	if err != nil {
-		log.Panicln("writer Flush error", err)
+	errFlush := w.Flush()
+	if errFlush != nil {
+		log.Println("writer Flush error")
+		return nil, errFlush
 	}
 
-	// TODO actually return errors
 	return out.Bytes(), nil
 }
 
-func AssemblePost(post []byte) ([]byte, error) {
-	page, err := template.ParseFiles(templatesDir + "/post.html")
-	if err != nil {
-		log.Panicln("template.ParseFiles", err)
-	}
+func AssembleTemplate(loc string, info interface{}) ([]byte, error) {
+	return AssemblePage(templatesDir+"/"+loc, info)
+}
 
-	out := new(bytes.Buffer)
-	w := bufio.NewWriter(out)
-
-	err = page.Execute(w, template.HTML(post))
-	if err != nil {
-		log.Panicln("template.Execute error", err)
-	}
-	err = w.Flush()
-	if err != nil {
-		log.Panicln("writer Flush error", err)
-	}
-
-	// TODO actually return errors
-	return out.Bytes(), nil
+func TemplateHTML(tmpl []byte) template.HTML {
+	return template.HTML(tmpl)
 }
