@@ -92,3 +92,8 @@ func ContainsStem(haystack []string, needle string) bool {
 	}
 	return false
 }
+
+func CleanDir(dir string) error {
+	// TODO do not allow certain dirs to be cleaned, e.g. _templates
+	return os.RemoveAll(dir)
+}

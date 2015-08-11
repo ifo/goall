@@ -10,14 +10,16 @@ import (
 )
 
 func main() {
-	templatesDir := flag.String(
-		"templates-dir",
-		"./_templates",
-		"directory containing templates")
+	templatesDir := flag.String("templates-dir", "./_templates", "template directory")
+	outputDir := flag.String("site", "./_site", "directory containing output")
 
 	// setup
 	flag.Parse()
 	goalls.SetupTemplates(*templatesDir)
+	errClean := goalls.CleanDir(*outputDir)
+	if errClean != nil {
+		log.Panicln(errClean)
+	}
 
 	// ensure example/site directory exists
 	err := os.MkdirAll("./_site/posts", 0755)
